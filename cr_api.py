@@ -35,10 +35,13 @@ def get_top_decks():
     top = get_top()
     def fetch_deck(player):
         player_info = get_user_info(player["tag"])
+
         return player_info["currentDeck"]
     
-    with ThreadPoolExecutor(max_workers=15) as executor:
-        top_decks = list(executor.map(fetch_deck, top))
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        results = list(executor.map(fetch_deck, top))
+    
+    top_decks = [deck for deck in results if deck]
     
     return top_decks
 
