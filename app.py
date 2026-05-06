@@ -1,24 +1,30 @@
-from dotenv import load_dotenv
-import os
-import requests
+import cr_api
 
-load_dotenv()
 #user_tag = input("Clash Royale ID: ")
-my_user_tag = "%23QULPLURYG"
-user_tag = my_user_tag
-token = os.getenv("TOKEN")
+my_user_tag = "#QULPLURYG"
+player_tag = my_user_tag
+min_level = 15
+max_level_diff = 16 - min_level
 
-base_url = "https://api.clashroyale.com/v1"
+raw_top = cr_api.get_top()
 
-headers = {
-    "Authorization" : f"Bearer {token}"
-}
+player_cards = cr_api.get_user_cards(player_tag)
 
-def get_user_info(user_tag):
-    url = f"{base_url}/players/{user_tag}"
-    response = requests.get(url, headers=headers)
-    return response.json()
+def check_deck_level(deck):
+    valid = True
+    for card in deck:
+        card_name = card["name"]
+        card_max_level = card["maxLevel"]
+        user_card_level = int(player_cards[card_name]["level"])
+        level_diff = card_max_level - user_card_level
+        if level_diff <= max_level_diff:
+            print(card["name"], "level: valid")
+            continue
+        else:
+            print(card["name"], "level: non-valid")
+            valid = False
+    return valid
 
-user_info = get_user_info(user_tag)
+top_1_deck = cr_api.get_top_decks()[0]
 
-print (user_info["cards"])
+print(check_deck_level(top_1_deck))
