@@ -19,7 +19,7 @@ def get_user_info(raw_user_tag):
     return response.json()
 
 def get_top():
-    url = f"{base_url}/locations/global/pathoflegend/players?limit=5"
+    url = f"{base_url}/locations/global/pathoflegend/players?limit=50"
     response = requests.get(url=url, headers=headers)
     return response.json()["items"]
 
