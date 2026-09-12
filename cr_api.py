@@ -44,4 +44,3 @@ def get_top_decks():
     top_decks = [deck for deck in results if deck]
     
     return top_decks
-

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CR Deck Assist</title>
+</head>
+<body>
+    <h1>CR Deck Assist</h1>
+    <form id="deck-form">
+        <label for="user-tag">Enter your Clash Royale user tag:</label>
+        <input type="text" id="user-tag" name="user-tag" required>
+        <button type="submit">Fetch Decks</button>
+    </form>
+    <div id="results"></div>
+    
+    <script>
+        async function fetchDecks(userTag) {
+            const response = await fetch(`/api/fetch-decks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_tag: userTag })
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return await response.json();
+        }
+    </script>
+</body>
+</html>

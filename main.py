@@ -47,5 +47,8 @@ def get_user_valid_decks(min_level):
     card_decks = get_decks_card_list(leveled_decks)
     return card_decks
 
-clean_decks = get_user_valid_decks(min_level)
-print(clean_decks)
+
+
+if __name__ == "__main__":
+    clean_decks = get_user_valid_decks(min_level)
+    print(clean_decks)
