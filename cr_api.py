@@ -5,7 +5,7 @@ from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
-token = os.getenv("UNI_TOKEN")
+token = os.getenv("TOKEN")
 
 base_url = "https://api.clashroyale.com/v1"
 headers = {
@@ -29,7 +29,6 @@ def get_top():
 def get_user_cards(user_tag):
     user_info = get_user_info(user_tag)
     user_cards = {c["name"]: c for c in user_info["cards"]}
-    #print(user_info)
     return user_cards
 
 def get_top_decks():
@@ -39,7 +38,7 @@ def get_top_decks():
 
         return player_info["currentDeck"]
     
-    with ThreadPoolExecutor(max_workers=12) as executor:
+    with ThreadPoolExecutor(max_workers=15) as executor:
         results = list(executor.map(fetch_deck, top))
     
     top_decks = [deck for deck in results if deck]
