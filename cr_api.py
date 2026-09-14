@@ -1,8 +1,9 @@
+import os
+from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import quote
+
 import requests
 from dotenv import load_dotenv
-import os
-from urllib.parse import quote
-from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 token = os.getenv("TOKEN")
@@ -13,7 +14,7 @@ headers = {
 }
 
 session = requests.Session()
-session.headers = headers
+session.headers.update(headers)
 
 def get_user_info(raw_user_tag):
     user_tag = quote(raw_user_tag)
@@ -37,10 +38,10 @@ def get_top_decks():
         player_info = get_user_info(player["tag"])
 
         return player_info["currentDeck"]
-    
+
     with ThreadPoolExecutor(max_workers=15) as executor:
         results = list(executor.map(fetch_deck, top))
-    
+
     top_decks = [deck for deck in results if deck]
-    
+
     return top_decks
