@@ -1,15 +1,33 @@
+import sys
+
 import cr_api
 
-user_tag = input("Clash Royale tag (include #):")
-min_level = int(input("Minimum card level:"))
-#my_tag = "#QULPLURYG"
+my_tag = "#QULPLURYG"
+
+if len(sys.argv) == 1:
+    print("Usage: python main.py <user_tag> <min_level>")
+    sys.exit(1)
+elif len(sys.argv) == 2:
+    if sys.argv[1] == "--debug":
+        user_tag = my_tag
+        min_level = 15
+    else:
+        print("Usage: python main.py <user_tag> <min_level>")
+        sys.exit(1)
+elif len(sys.argv) == 3:
+    user_tag = sys.argv[1]
+    min_level = sys.argv[2]
+else:
+    print("Usage: python main.py <user_tag> <min_level>")
+    sys.exit(1)
+
 player_cards = cr_api.get_user_cards(user_tag)
 
 def check_deck_level(deck, min_level, player_cards):
     for card in deck:
         if card["name"] not in player_cards:
             return False
-        
+
         card_max_level = card["maxLevel"]
         user_card_level = int(player_cards[card["name"]]["level"])
 
@@ -35,7 +53,7 @@ def get_decks_card_list(decks):
 
     for i, deck in enumerate(decks, start=1):
         clean_decks[i] = []
-        
+
         for card in deck:
             clean_decks[i].append(card["name"])
 
@@ -47,8 +65,8 @@ def get_user_valid_decks(min_level):
     card_decks = get_decks_card_list(leveled_decks)
     return card_decks
 
-
-
 if __name__ == "__main__":
     clean_decks = get_user_valid_decks(min_level)
-    print(clean_decks)
+
+    for deck in clean_decks:
+        print(f"{deck}\n")

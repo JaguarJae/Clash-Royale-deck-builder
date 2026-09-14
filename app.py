@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+
 from cr_api import get_top_decks
 from main import get_user_valid_decks
 
