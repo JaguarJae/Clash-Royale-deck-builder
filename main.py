@@ -8,7 +8,7 @@ if len(sys.argv) == 1:
     print("Usage: python main.py <user_tag> <min_level>")
     sys.exit(1)
 elif len(sys.argv) == 2:
-    if sys.argv[1] == "--debug":
+    if sys.argv[1] == "--test" or sys.argv[1] == "-t":
         user_tag = my_tag
         min_level = 15
     else:
