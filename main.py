@@ -1,19 +1,13 @@
 import sys
 
 import cr_api
+from deck import Deck
 
 my_tag = "#QULPLURYG"
 
-if len(sys.argv) == 1:
-    print("Usage: python main.py <user_tag> <min_level>")
-    sys.exit(1)
-elif len(sys.argv) == 2:
-    if sys.argv[1] == "--test" or sys.argv[1] == "-t":
-        user_tag = my_tag
-        min_level = 15
-    else:
-        print("Usage: python main.py <user_tag> <min_level>")
-        sys.exit(1)
+if len(sys.argv) == 2 and sys.argv[1] == "--test" or sys.argv[1] == "-t":
+    user_tag = my_tag
+    min_level = 15
 elif len(sys.argv) == 3:
     user_tag = sys.argv[1]
     min_level = sys.argv[2]
@@ -60,13 +54,13 @@ def get_decks_card_list(decks):
     return clean_decks
 
 def get_user_valid_decks(min_level):
-    top_decks = cr_api.get_top_decks()
-    leveled_decks = check_top_decks_level(top_decks, min_level)
+    raw_top_decks = cr_api.get_top_decks()
+    leveled_decks = check_top_decks_level(raw_top_decks, min_level)
     card_decks = get_decks_card_list(leveled_decks)
     return card_decks
 
 if __name__ == "__main__":
-    clean_decks = get_user_valid_decks(min_level)
+    decks = get_user_valid_decks(min_level)
 
-    for deck in clean_decks:
+    for deck in decks:
         print(f"{deck}\n")
