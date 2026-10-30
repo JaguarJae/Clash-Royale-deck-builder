@@ -1,11 +1,12 @@
 import sys
 
 import cr_api
+from card import Card
 from deck import Deck
 
 my_tag = "#QULPLURYG"
 
-if len(sys.argv) == 2 and sys.argv[1] == "--test" or sys.argv[1] == "-t":
+if len(sys.argv) == 2 and (sys.argv[1] == "--test" or sys.argv[1] == "-t"):
     user_tag = my_tag
     min_level = 15
 elif len(sys.argv) == 3:
@@ -15,11 +16,18 @@ else:
     print("Usage: python main.py <user_tag> <min_level>")
     sys.exit(1)
 
-player_cards = cr_api.get_user_cards(user_tag)
+def get_user_card_classes(player_cards):
+    player_cards = cr_api.get_user_cards(user_tag)
+    card_array = []
+    for i, card in enumerate(player_cards):
+        card_array.append(Card(card["name"], card["level"], card["rarity"]))
+    return card_array
+
+user_cards = get_user_card_classes
 
 def check_deck_level(deck, min_level, player_cards):
     for card in deck:
-        if card["name"] not in player_cards:
+        if card.name not in player_cards:
             return False
 
         card_max_level = card["maxLevel"]
@@ -37,7 +45,7 @@ def check_deck_level(deck, min_level, player_cards):
 def check_top_decks_level(top_decks, min_level):
     valid_decks = []
     for deck in top_decks:
-        valid = check_deck_level(deck, min_level, player_cards)
+        valid = check_deck_level(deck, min_level, user_cards)
         if valid is True:
             valid_decks.append(deck)
     return valid_decks
