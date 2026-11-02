@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-lazy import cr_api
+import cr_api
 
 my_tag = "#QULPLURYG"
 
@@ -30,7 +30,10 @@ min_level = args.level
 
 
 player_cards = cr_api.get_user_cards(user_tag)
-top_decks = cr_api.get_top_decks()
+if args.sync:
+    top_decks = cr_api.get_top_decks()
+else:
+    top_decks = os.path
 
 if (args.sync or not os.path.exists("cache.json")):
     with open("cache.json", "w", encoding="utf-8") as file:
