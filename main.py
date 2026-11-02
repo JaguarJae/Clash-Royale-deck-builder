@@ -1,29 +1,44 @@
-import sys
+import argparse
+import json
+import os
 
-import cr_api
+lazy import cr_api
 
 my_tag = "#QULPLURYG"
 
-if len(sys.argv) == 1:
-    print("Usage: python main.py <user_tag> <min_level>")
-    sys.exit(1)
-elif len(sys.argv) == 2:
-    if sys.argv[1] == "--test" or sys.argv[1] == "-t":
-        user_tag = my_tag
-        min_level = 15
-    else:
-        print("Usage: python main.py <user_tag> <min_level>")
-        sys.exit(1)
-elif len(sys.argv) == 3:
-    user_tag = sys.argv[1]
-    min_level = sys.argv[2]
+parser = argparse.ArgumentParser(description="Clash Royale deck maker")
+
+parser.add_argument("--level", "-l", required=True, type=int, help="Minimum card level")
+parser.add_argument("--sync", "-s", help="Update locally saved decks", action="store_true")
+
+group = parser.add_mutually_exclusive_group(required=True)
+
+group.add_argument("--id", help="Your clash royale id")
+group.add_argument("--test", "-t", help="Use my tag as a test", action="store_true")
+
+args = parser.parse_args()
+if (args.test):
+    user_tag = my_tag
 else:
-    print("Usage: python main.py <user_tag> <min_level>")
-    sys.exit(1)
+    user_tag = args.id.upper()
+
+if (not user_tag.startswith('#')):
+    user_tag = '#' + user_tag
+
+min_level = args.level
+
+
 
 player_cards = cr_api.get_user_cards(user_tag)
+top_decks = cr_api.get_top_decks()
 
-def check_deck_level(deck, min_level, player_cards):
+if (args.sync or not os.path.exists("cache.json")):
+    with open("cache.json", "w", encoding="utf-8") as file:
+        json.dump(top_decks, file, indent=4, ensure_ascii=False)
+
+
+
+def check_deck_level(deck, player_cards):
     for card in deck:
         if card["name"] not in player_cards:
             return False
@@ -40,10 +55,10 @@ def check_deck_level(deck, min_level, player_cards):
             return False
     return True
 
-def check_top_decks_level(top_decks, min_level):
+def check_top_decks_level(top_decks):
     valid_decks = []
     for deck in top_decks:
-        valid = check_deck_level(deck, min_level, player_cards)
+        valid = check_deck_level(deck, player_cards)
         if valid is True:
             valid_decks.append(deck)
     return valid_decks
@@ -59,14 +74,14 @@ def get_decks_card_list(decks):
 
     return clean_decks
 
-def get_user_valid_decks(min_level):
-    top_decks = cr_api.get_top_decks()
-    leveled_decks = check_top_decks_level(top_decks, min_level)
+def get_user_valid_decks():
+    leveled_decks = check_top_decks_level(top_decks)
     card_decks = get_decks_card_list(leveled_decks)
     return card_decks
 
 if __name__ == "__main__":
-    clean_decks = get_user_valid_decks(min_level)
-
-    for deck in clean_decks:
-        print(f"{deck}\n")
+    clean_decks = get_user_valid_decks()
+    for num, cards in clean_decks.items():
+        print(f"\n{num}: ")
+        for card in cards:
+            print(f"{card} ")

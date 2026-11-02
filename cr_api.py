@@ -27,7 +27,7 @@ def get_user_info(raw_user_tag):
     return response.json()
 
 def get_top():
-    url = f"{base_url}/locations/global/pathoflegend/players"
+    url = f"{base_url}/locations/global/pathoflegend/players?limit=10"
     response = requests.get(url=url, headers=headers)
     if response.status_code != 200:
         print(f"Error fetching top players: {response.status_code} - {response.text}")
