@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 load_dotenv()
 token = os.getenv("TOKEN")
 
-base_url = "https://api.clashroyale.com/v1"
 headers = {
     "Authorization" : f"Bearer {token}"
 }
@@ -19,15 +18,15 @@ session.headers.update(headers)
 
 def get_user_info(raw_user_tag):
     user_tag = quote(raw_user_tag)
-    url = f"{base_url}/players/{user_tag}"
+    url = f"https://api.clashroyale.com/v1/players/{user_tag}"
     response = session.get(url, headers=headers)
     if response.status_code != 200:
         print(f"Error fetching user info: {response.status_code} - {response.text}")
         sys.exit(1)
     return response.json()
 
-def get_top():
-    url = f"{base_url}/locations/global/pathoflegend/players?limit=10"
+def get_top_players():
+    url = "https://api.clashroyale.com/v1/locations/global/pathoflegends/players?limit=100"
     response = requests.get(url=url, headers=headers)
     if response.status_code != 200:
         print(f"Error fetching top players: {response.status_code} - {response.text}")
@@ -45,7 +44,7 @@ def get_user_cards(user_tag):
     return user_cards
 
 def get_top_decks():
-    top = get_top()
+    top = get_top_players()
     def fetch_deck(player):
         player_info = get_user_info(player["tag"])
         if "currentDeck" not in player_info:

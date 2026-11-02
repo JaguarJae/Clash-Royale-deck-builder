@@ -27,19 +27,18 @@ if (not user_tag.startswith('#')):
 
 min_level = args.level
 
-
-
 player_cards = cr_api.get_user_cards(user_tag)
-if args.sync:
-    top_decks = cr_api.get_top_decks()
-else:
-    top_decks = os.path
 
 if (args.sync or not os.path.exists("cache.json")):
-    with open("cache.json", "w", encoding="utf-8") as file:
-        json.dump(top_decks, file, indent=4, ensure_ascii=False)
+    top_decks = cr_api.get_top_decks()
+    if top_decks is not None:
+        with open("cache.json", "w", encoding="utf-8") as file:
+            json.dump(top_decks, file, indent=4, ensure_ascii=False)
+    else:
+        print("Not updated cache because there is no info")
 
-
+with open("cache.json", "r", encoding="utf-8") as file:
+    top_decks = json.load(file)
 
 def check_deck_level(deck, player_cards):
     for card in deck:
@@ -77,14 +76,12 @@ def get_decks_card_list(decks):
 
     return clean_decks
 
-def get_user_valid_decks():
-    leveled_decks = check_top_decks_level(top_decks)
-    card_decks = get_decks_card_list(leveled_decks)
-    return card_decks
 
 if __name__ == "__main__":
-    clean_decks = get_user_valid_decks()
-    for num, cards in clean_decks.items():
+    leveled_decks = check_top_decks_level(top_decks)
+    card_decks = get_decks_card_list(leveled_decks)
+
+    for num, cards in card_decks.items():
         print(f"\n{num}: ")
         for card in cards:
             print(f"{card} ")
