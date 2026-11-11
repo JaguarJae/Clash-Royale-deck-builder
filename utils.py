@@ -6,9 +6,10 @@ def fetch_card_names(raw_decks):
             deck.append(card["name"])
         if (len(deck) != 8):
             print("Something happened with this deck", deck)
-        decks.append(deck)
+        for array_deck in decks:
+            if (deck != array_deck):
+                decks.append(deck)
     return decks
-
 
 def check_deck_level(deck, player_cards, min_level):
     for card in deck:
