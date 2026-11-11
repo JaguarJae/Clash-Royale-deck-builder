@@ -26,7 +26,7 @@ def get_user_info(raw_user_tag):
     return response.json()
 
 def get_top_players():
-    url = "https://api.clashroyale.com/v1/locations/global/pathoflegends/players?limit=100"
+    url = "https://api.clashroyale.com/v1/locations/global/pathoflegend/players?limit=50"
     response = requests.get(url=url, headers=headers)
     if response.status_code != 200:
         print(f"Error fetching top players: {response.status_code} - {response.text}")
