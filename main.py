@@ -12,10 +12,10 @@ parser = argparse.ArgumentParser(description="Clash Royale deck maker")
 parser.add_argument("--level", "-l", required=True, type=int, help="Minimum card level")
 parser.add_argument("--sync", "-s", help="Update locally saved decks", action="store_true")
 
-group = parser.add_mutually_exclusive_group(required=True)
+tag_group = parser.add_mutually_exclusive_group(required=True)
 
-group.add_argument("--id", help="Your clash royale id")
-group.add_argument("--test", "-t", help="Use my tag as a test", action="store_true")
+tag_group.add_argument("--id", help="Your clash royale id")
+tag_group.add_argument("--test", "-t", help="Use my tag as a test", action="store_true")
 
 args = parser.parse_args()
 if (args.test):
@@ -27,7 +27,6 @@ if (not user_tag.startswith('#')):
     user_tag = '#' + user_tag
 
 min_level = args.level
-
 player_cards = api.get_user_cards(user_tag)
 
 if (args.sync or not os.path.exists("cache.json")):
